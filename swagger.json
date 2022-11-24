@@ -1,0 +1,160 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0", 
+      "title": "My test Api's",
+      "description": "",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host1": "localhost:5000",
+    "paths": {
+      "/prescription/getAll": {
+        "post": {
+          "tags": ["Prescription"],
+          "summary": "Get all states in system",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "",
+              "required": false,
+              "schema": {
+                "$ref": "#/definition/prescriptionGetAll"
+              }
+            },
+            { "name": "x-access-token", "in": "header", "type": "string", "description": "auth token" }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definition/Brand"
+              }
+            }
+          }
+        }
+      },
+      "/prescription/add": {
+        "get": {
+          "tags": ["Prescription"],
+          "summary": "Get all document masters in system",
+          "parameters": [
+            {
+                "in" : "query",
+                "name" : "id",
+                "description" : "",
+                "required" : true
+              }
+
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definition/Brand"
+              }
+            }
+          }
+        }
+      },
+      "/prescription/update": {
+        "post": {
+          "tags": ["Prescription"],
+          "summary": "Get all brand in system -> used for product brand",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "",
+              "required": false,
+              "schema": {
+                "$ref": "#/definition/prescription"
+              }
+            },
+            { "name": "x-access-token", "in": "header", "type": "string", "description": "auth token" }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definition/prescription"
+              }
+            }
+          }
+        }
+      }
+    },
+
+
+    "definition":{
+        "object":{
+
+        },
+        "prescriptionGetAll":{
+            "required": [],
+            "properties":{
+            
+                  "name":{
+                    "type":"number"                    
+                },
+                "age":{
+                    "type":"string"
+                    
+                },
+                "gender":{
+                    "type":"string"
+                },
+                "complaints":{
+                    "type":"string"                    
+                },
+                "allergiesAndDiagnosis":{
+                    "type":"string"                    
+                },
+                "isActive":{
+                    "type":"boolean"                    
+                },
+                "medicine":{
+                    "type":"boolean"                    
+                }
+            }
+        },
+
+        "prescription/save":{
+            "required": [],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "uniqueItems": true
+              },
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "vendorId" : {
+                "type": "integer"
+              },
+              "isActive" : {
+                "type" : "integer"
+              },
+              "updatedOn" : {
+                "type" : "string"
+              },
+              "updatedBy" : {
+                "type" : "integer"
+              }
+            }
+        }
+        ,  
+        "Brands": {
+            "type": "array",
+            "$ref": "#/definitions/Brand"
+          }
+
+    }    
+    
+}

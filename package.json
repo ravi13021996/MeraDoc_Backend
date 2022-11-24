@@ -13,6 +13,10 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mongoose": "^6.7.2"
+    "html-pdf-node": "^1.0.8",
+    "mongoose": "^6.7.2",
+    "pdfkit": "^0.13.0",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.6.0"
   }
 }
