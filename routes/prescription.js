@@ -1,14 +1,12 @@
 const prescriptionModel = require('../db/prescription')
-
 const router = require('express').Router()
 const prescriptionMedicineModel = require('../db/prescribeMedicine')
-
-// const PDFDocument = require('pdfkit');
 const PDFDocument = require("pdfkit-table");
 
-const fs = require('fs')
+const fs = require('fs');
+const e = require('express');
 router.post("/add", (req, res) => {
-    console.log(req.body, "req.body")
+
     if (req.body.name && req.body.age && req.body.gender && req.body.complaints && req.body.allergiesAndDiagnosis && req.body.medicine) {
         let date = new Date()
         prescriptionModel.create({
@@ -22,13 +20,13 @@ router.post("/add", (req, res) => {
             isActive: true
 
         }).then((response) => {
-            console.log(response, "resss")
+
             checkIfValidMedicine(req.body.medicine, response._id).then((resItem) => {
                 savePdf(response._id)
             })
             res.send({ message: "prescription saved" })
         }).catch((err) => {
-            console.log(err)
+            
             res.send({ message: "prescription Model errr" })
         })
 
@@ -40,11 +38,9 @@ router.post("/add", (req, res) => {
 
 
 router.put('/update', (req, res) => {
-    console.log(req.body, "before")
+    
     let transformBOdy = { ...req.body }
     delete transformBOdy.medicine
-    // console.log(transformBOdy, "transformBOdy")
-
 
     if (req.body._id && req.body.name && req.body.age && req.body.gender && req.body.complaints && req.body.allergiesAndDiagnosis) {
         let allDonePromise = new Promise(async (resolve, reject) => {
@@ -69,28 +65,22 @@ router.put('/update', (req, res) => {
             res.send({ message: "updated" })
         })
 
-
-
-
     } else {
         res.send({ message: "Please provide Entire Feild" })
     }
 
-
 })
 
 router.post('/getAll', async (req, res) => {
-    console.log(req.body, "req.body")
+    
     let allPrescription = await prescriptionModel.find({ isActive: true,patiantName:{$regex : req.body.searchFeild}})
-    console.log(allPrescription.length, "allPrescription")
-
 
     let finalDataPromise = new Promise((resolve, reject) => {
         let overALlData = []
         allPrescription.map(async (eachPrescription, index) => {
-            // console.log(eachPrescription, "prescriptionListData")
+        
             let medicineData = await prescriptionMedicineModel.count({ parentId: eachPrescription._id, isActive: true })
-            console.log(medicineData, "medicineData")
+            
             eachPrescription.medicine = "data"
             let clonePrescription = {}
             clonePrescription._id = eachPrescription._id
@@ -103,13 +93,8 @@ router.post('/getAll', async (req, res) => {
             clonePrescription.createdAt = eachPrescription.createdAt
             clonePrescription.medicineCount = medicineData
 
-
-
-
-
-            overALlData.push(clonePrescription)
-            // console.log(overALlData, "overALlData")
-            // console.log(index,"index")
+overALlData.push(clonePrescription)
+            
             if (overALlData.length === allPrescription.length) {
                 resolve(overALlData)
             }
@@ -121,7 +106,7 @@ router.post('/getAll', async (req, res) => {
         let sortedData = result.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt)
         })
-        // console.log(result, "result")
+
         res.send({ message: "ok", data: sortedData, totalCount: allPrescription.length })
     })
 
@@ -130,25 +115,27 @@ router.post('/getAll', async (req, res) => {
 
 
 router.get('/getById/:id', async (req, res) => {
-    console.log(req.params, "req.query")
+
     if (req.params.id) {
         try {
-            let allPrescription = await prescriptionModel.findById({ _id: req.params.id })
-            let medicineRelate = await prescriptionMedicineModel.find({ parentId: req.params.id, isActive: true })
-
-            console.log(allPrescription, "allPrescription")
-            console.log(medicineRelate, "medicineRelate")
-            let clonePrescription = {}
-            clonePrescription._id = allPrescription._id
-            clonePrescription.patiantName = allPrescription.patiantName
-            clonePrescription.patiantAge = allPrescription.patiantAge
-            clonePrescription.patiantGender = allPrescription.patiantGender
-            clonePrescription.complaints = allPrescription.complaints
-            clonePrescription.allergiesAndDiagnosis = allPrescription.allergiesAndDiagnosis
-            clonePrescription.isActive = allPrescription.isActive
-            clonePrescription.medicineCount = medicineRelate
-            res.send({ message: "data", data: clonePrescription })
-
+            let allPrescription = await prescriptionModel.findOne({_id: req.params.id ,isActive:true})
+            if(allPrescription){
+                let medicineRelate = await prescriptionMedicineModel.find({ parentId: req.params.id, isActive: true })
+                let clonePrescription = {}
+                clonePrescription._id = allPrescription._id
+                clonePrescription.patiantName = allPrescription.patiantName
+                clonePrescription.patiantAge = allPrescription.patiantAge
+                clonePrescription.patiantGender = allPrescription.patiantGender
+                clonePrescription.complaints = allPrescription.complaints
+                clonePrescription.allergiesAndDiagnosis = allPrescription.allergiesAndDiagnosis
+                clonePrescription.isActive = allPrescription.isActive
+                clonePrescription.medicineCount = medicineRelate
+                res.send({ message: "data", data: clonePrescription })
+    
+            }else{
+                res.status(400).send({ message: "no user present", data: {} })
+            }
+            
         } catch {
             res.status(400).send({ message: "Please provide Correct id" })
         }
@@ -166,31 +153,24 @@ const functionForFindMedicine = async (eachPrescription) => {
 
 }
 
-
-router.get('/genPdf', async (req, res) => {
-
-
-    // console.log(parentData, "parentData")
-    // console.log( findedData)
-})
 router.post('/getAllMedicine', (req, res) => {
-    console.log(req.body, "req.body")
-    prescriptionMedicineModel.findOneAndUpdate({ _id: req.body._id }, req.body).then((updateItem) => {
-        console.log(updateItem, "updateItem")
-    })
-    // prescriptionMedicineModel.findOne({_id:"637cb7568802f274fb53ecb0"}).then((medicineItem)=>{
-    //     console.log(medicineItem,"medicineItem")
-    // }).catch((err)=>{
 
-    // })
+    prescriptionMedicineModel.findOneAndUpdate({ _id: req.body._id }, req.body).then((updateItem) => {
+    })
+    
 })
 router.delete('/delete/:id', async (req, res) => {
-    console.log(req.params, "req.params")
-    prescriptionModel.findByIdAndUpdate(req.params.id, { isActive: false }).then((resItem) => {
-        res.send({ message: "delete" })
+    
+    prescriptionModel.findOneAndUpdate({_id:req.params.id,isActive: true},{ isActive: false }).then((resI)=>{
+        if(resI){
+            res.send({ message: "delete" })    
+        }
+        else{
+            res.send({ message: "No user presented" })
+        }
+    }).catch((err)=>{
+
     })
-
-
 })
 
 module.exports = router
@@ -236,7 +216,6 @@ const checkIfValidMedicine = async (data, parentId) => {
                     return responseObj
                 }).catch((err) => {
                     responseObj.message = "Something went wrong. Please check new entries"
-                    console.log(err, "medicin save error")
                 })
             }
 
@@ -276,9 +255,6 @@ const savePdf = async (parentId) => {
         allergiesAndDiagnosis: parentData.allergiesAndDiagnosis
     }
 
-    console.log(filterParentData, "filterParentData")
-
-    console.log(Object.entries(filterParentData), "filterParentData")
     doc.pipe(fs.createWriteStream(`./files/${parentId}.pdf`));
 
     ; (async function () {
@@ -318,7 +294,7 @@ const savePdf = async (parentId) => {
                 indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
             },
         });
-        // done!
+
         doc.end();
     })();
 
