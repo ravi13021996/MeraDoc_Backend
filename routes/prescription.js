@@ -1,14 +1,20 @@
+'use strict';
 const prescriptionModel = require('../db/prescription')
 const router = require('express').Router()
 const prescriptionMedicineModel = require('../db/prescribeMedicine')
 const PDFDocument = require("pdfkit-table");
-
+const xlsxFile = require('read-excel-file/node');
+// const ExcelData=require('./1671694645226.ods')
 const fs = require('fs');
+const Excel=require('exceljs')
+const excelToJson = require('convert-excel-to-json');
+
 const e = require('express');
 router.post("/add", (req, res) => {
 
     if (req.body.name && req.body.age && req.body.gender && req.body.complaints && req.body.allergiesAndDiagnosis && req.body.medicine) {
         let date = new Date()
+
         prescriptionModel.create({
             patiantName: req.body.name,
             patiantAge: req.body.age,
@@ -26,7 +32,7 @@ router.post("/add", (req, res) => {
             })
             res.send({ message: "prescription saved" })
         }).catch((err) => {
-            
+
             res.send({ message: "prescription Model errr" })
         })
 
@@ -38,7 +44,7 @@ router.post("/add", (req, res) => {
 
 
 router.put('/update', (req, res) => {
-    
+
     let transformBOdy = { ...req.body }
     delete transformBOdy.medicine
 
@@ -56,10 +62,7 @@ router.put('/update', (req, res) => {
             checkIfValidMedicine(req.body.medicine, req.body._id).then((medicineStatus) => {
                 resolve("ok")
                 savePdf(req.body._id)
-
             })
-
-
         })
         allDonePromise.then((item) => {
             res.send({ message: "updated" })
@@ -72,54 +75,73 @@ router.put('/update', (req, res) => {
 })
 
 router.post('/getAll', async (req, res) => {
-    
-    let allPrescription = await prescriptionModel.find({ isActive: true,patiantName:{$regex : req.body.searchFeild}})
-
-    let finalDataPromise = new Promise((resolve, reject) => {
-        let overALlData = []
-        allPrescription.map(async (eachPrescription, index) => {
+    let { fromDate, toDate , pageNo,pageSize,isActive} = req.body
+     let fornDateConvt=new Date(fromDate)
+     let toDateConvt =new Date(toDate)
+     console.log(fornDateConvt,"fornDateConvt") 
+    console.log(fromDate, toDate,isActive)
+    let allPrescription = await prescriptionModel.find({ isActive: isActive!==null?isActive :{$exists:true},patiantName:{ $regex:req.body.searchFeild} }).sort({createdAt:1})
         
-            let medicineData = await prescriptionMedicineModel.count({ parentId: eachPrescription._id, isActive: true })
-            
-            eachPrescription.medicine = "data"
-            let clonePrescription = {}
-            clonePrescription._id = eachPrescription._id
-            clonePrescription.patiantName = eachPrescription.patiantName
-            clonePrescription.patiantAge = eachPrescription.patiantAge
-            clonePrescription.patiantGender = eachPrescription.patiantGender
-            clonePrescription.complaints = eachPrescription.complaints
-            clonePrescription.allergiesAndDiagnosis = eachPrescription.allergiesAndDiagnosis
-            clonePrescription.isActive = eachPrescription.isActive
-            clonePrescription.createdAt = eachPrescription.createdAt
-            clonePrescription.medicineCount = medicineData
+    console.log( allPrescription,"allPrescription")
 
-overALlData.push(clonePrescription)
-            
-            if (overALlData.length === allPrescription.length) {
-                resolve(overALlData)
-            }
-        })
-    })
+    console.log(pageSize*(pageNo-1),pageSize*pageSize,"pageSize*(pageNo-1),pageSize*pageSize")
+    res.send({ message: "ok", data: allPrescription.slice(pageSize*(pageNo-1),pageSize*pageNo), totalCount: allPrescription.length })
+    
+    
+    // let aggregateData= await prescriptionModel.aggregate([{$project:{"createdAtSample":{$concat:["$createdAt","","T11:44:44.116+00:00"]}}}])
+    //   await  prescriptionModel.updateMany({},[{$set:{createdAt:{$replaceAll:{input:"$createdAt",find:"T11:44:44.116+00:00",replacement:"" }}}}])
+
+    // await  prescriptionModel.updateMany({},[{$set:{createdAt:{$dateFromString:{dateString:'$createdAt'}}}}])
+    // console.log(aggregateData,"aggregateData")
+    // let aggDate=    await prescriptionModel.aggregate([{$project:{createdAt:{$dateFromString:{dateString:'$createdAt'}}}}])
+
+    // console.log(aggDate,"aggDate")
+
+    // let finalDataPromise = new Promise((resolve, reject) => {
+    //     let overALlData = []
+    //     if(allPrescription.length<1){
+    //         resolve(allPrescription)
+    //     }
+    //     else{
+    //         allPrescription.map(async (eachPrescription, index) => {
+
+    //             let medicineData = await prescriptionMedicineModel.count({ parentId: eachPrescription._id, isActive: true })
+    
+    //             eachPrescription.medicine = "data"
+    //             let clonePrescription = {}
+    //             clonePrescription._id = eachPrescription._id
+    //             clonePrescription.patiantName = eachPrescription.patiantName
+    //             clonePrescription.patiantAge = eachPrescription.patiantAge
+    //             clonePrescription.patiantGender = eachPrescription.patiantGender
+    //             clonePrescription.complaints = eachPrescription.complaints
+    //             clonePrescription.allergiesAndDiagnosis = eachPrescription.allergiesAndDiagnosis
+    //             clonePrescription.isActive = eachPrescription.isActive
+    //             clonePrescription.createdAt = eachPrescription.createdAt
+    //             clonePrescription.medicineCount = medicineData
+    
+    //             overALlData.push(clonePrescription)  
+    //             resolve(overALlData)            
+    //         })
+    //     }       
+    // })
 
 
-    finalDataPromise.then((result) => {
-        let sortedData = result.sort((a, b) => {
-            return new Date(b.createdAt) - new Date(a.createdAt)
-        })
-
-        res.send({ message: "ok", data: sortedData, totalCount: allPrescription.length })
-    })
-
-
+    // finalDataPromise.then((result) => {
+    //     let sortedData = result.sort((a, b) => {
+    //         return new Date(b.createdAt) - new Date(a.createdAt)
+    //     })
+    //     console.log(sortedData,"sortedData")
+    //     res.send({ message: "ok", data: sortedData, totalCount: allPrescription.length })
+    // })
 })
 
 
-router.get('/getById/:id', async (req, res) => {
 
+router.get('/getById/:id', async (req, res) => {
     if (req.params.id) {
         try {
-            let allPrescription = await prescriptionModel.findOne({_id: req.params.id ,isActive:true})
-            if(allPrescription){
+            let allPrescription = await prescriptionModel.findOne({ _id: req.params.id, isActive: true })
+            if (allPrescription) {
                 let medicineRelate = await prescriptionMedicineModel.find({ parentId: req.params.id, isActive: true })
                 let clonePrescription = {}
                 clonePrescription._id = allPrescription._id
@@ -131,11 +153,10 @@ router.get('/getById/:id', async (req, res) => {
                 clonePrescription.isActive = allPrescription.isActive
                 clonePrescription.medicineCount = medicineRelate
                 res.send({ message: "data", data: clonePrescription })
-    
-            }else{
+            } else {
                 res.status(400).send({ message: "no user present", data: {} })
             }
-            
+
         } catch {
             res.status(400).send({ message: "Please provide Correct id" })
         }
@@ -157,20 +178,38 @@ router.post('/getAllMedicine', (req, res) => {
 
     prescriptionMedicineModel.findOneAndUpdate({ _id: req.body._id }, req.body).then((updateItem) => {
     })
-    
+
 })
 router.delete('/delete/:id', async (req, res) => {
-    
-    prescriptionModel.findOneAndUpdate({_id:req.params.id,isActive: true},{ isActive: false }).then((resI)=>{
-        if(resI){
-            res.send({ message: "delete" })    
+
+    prescriptionModel.findOneAndUpdate({ _id: req.params.id, isActive: true }, { isActive: false }).then((resI) => {
+        if (resI) {
+            res.send({ message: "delete" })
         }
-        else{
+        else {
             res.send({ message: "No user presented" })
         }
-    }).catch((err)=>{
+    }).catch((err) => {
 
     })
+})
+
+
+router.post('/importPrescription',async (req,res)=>{
+    // const data = await fs.readFile('./RaviExcel.xlsx')
+    console.log(`${__dirname}`+`/1671694645226.ods`)
+    let urlTest=`${__dirname}`+`/excelTestData.xlsx` 
+    
+    let workbook= new Excel.Workbook()
+    console.log( urlTest,"urlTest")
+    // const result=excelToJson({
+    //     sourceFile:fs.readFileSync( urlTest)
+    // })
+    
+    // console.log(result,"result")
+    
+    console.log(fs.readFileSync( urlTest),"fs.readFileSync( urlTest)")
+       res.send("hiii")
 })
 
 module.exports = router

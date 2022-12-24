@@ -6,6 +6,7 @@ const prescription=require('./routes/prescription')
 const swaggerJdoc=require("swagger-jsdoc")
 const swaggerUi=require('swagger-ui-express')
 const prescriptionMedicineModel = require('./db/prescribeMedicine')
+const filter =require('./routes/filter')
 // require('./test')
 const swagDoc =require('./swagger.json')
 const cors=require('cors')
@@ -15,6 +16,8 @@ app.use(express.json())
 
 app.use('/consumption',consumptionTime)
 app.use('/prescription',prescription)
+app.use('/filter', filter)
+
 
 const options={
     definition:{

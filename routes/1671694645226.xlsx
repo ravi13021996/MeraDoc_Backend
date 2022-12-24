@@ -1,0 +1,27 @@
+
+            <!DOCTYPE html>
+            <html lang="zh-Hans">
+                 <head>
+                     <meta charset="UTF-8">
+                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                     <title>HTML5 Blob to Excel</title>
+        
+            <style>
+                .heading{
+                border:1px solid red
+                } 
+                tr{
+                    border: 1px solid #0ff;
+                    color: #f0f;
+                }
+                </style>
+                </head>
+                <body>
+            <table> 
+            <tr class="heading" style="border:3px solid green;color:red;">
+                <td>Name </td>
+                <td>Complaints </td>
+                <td>Age </td>
+                <td>Allergy </td>
+            </tr><tr><td>Olimpia Anyene</td><td>Phalacrocorax brasilianus</td><td>91</td><td>Gymnorhina tibicen</td></tr><tr><td>Jeanette Tripe</td><td>Psittacula krameri</td><td>75</td><td>Laniarius ferrugineus</td></tr><tr><td>Renell Dunnet</td><td>Perameles nasuta</td><td>26</td><td>Alopex lagopus</td></tr><tr><td>Minnie Kupisz</td><td>Sagittarius serpentarius</td><td>61</td><td>Anitibyx armatus</td></tr><tr><td>Stevie Tadd</td><td>Corvus albicollis</td><td>58</td><td>Uraeginthus granatina</td></tr><tr><td>Aldous Desseine</td><td>Dendrocitta vagabunda</td><td>53</td><td>Bucephala clangula</td></tr><tr><td>Rhoda Balshaw</td><td>Bison bison</td><td>74</td><td>Vulpes vulpes</td></tr><tr><td>Trudey McGougan</td><td>Thylogale stigmatica</td><td>43</td><td>Paroaria gularis</td></tr><tr><td>Billye Lawlee</td><td>Anas platyrhynchos</td><td>49</td><td>Cabassous sp.</td></tr><tr><td>RavikantTest</td><td>sdfg;ksdjfglsdfvjksdjkfbvjksdbfvjksdfbv</td><td>26</td><td>jkadfkv sdkfvksd fvksdhfv </td></tr></table> </body> </html>
