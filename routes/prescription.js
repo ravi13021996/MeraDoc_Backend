@@ -136,7 +136,7 @@ router.post('/getAll', async (req, res) => {
 })
 
 router.get("/test",(req,res)=>{
-    console.loh("hii test")
+    console.log("hii test")
     res.send({"message":"ravikant"})
 })
 
