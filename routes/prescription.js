@@ -135,7 +135,9 @@ router.post('/getAll', async (req, res) => {
     // })
 })
 
-
+router.get("/test",(req,res)=>{
+    res.send({"message":"ravikant"})
+})
 
 router.get('/getById/:id', async (req, res) => {
     if (req.params.id) {
