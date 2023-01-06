@@ -1,0 +1,387 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Mera Doc Api's",
+    "description": "",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host1": "localhost:5000",
+  "paths": {
+    "/prescription/getAll": {
+      "post": {
+        "tags": [
+          "Prescription"
+        ],
+        "summary": "Get all Prescriptions",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definition/prescriptionGetAllRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definition/prescriptionGetAllResponseBody"
+            }
+          }
+        }
+      }
+    },
+    "/prescription/add": {
+      "post": {
+        "tags": [
+          "Prescription"
+        ],
+        "summary": "Add a prescription",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definition/prescriptionAddRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definition/prescriptionAddResponseBody"
+            }
+          }
+        }
+      }
+    },
+    "/prescription/update": {
+      "put": {
+        "tags": [
+          "Prescription"
+        ],
+        "summary": "Update Prescription",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/definition/prescriptionUpdateRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definition/prescriptionUpdateResponseBody"
+            }
+          }
+        }
+      }
+    },
+    "/prescription/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Prescription"
+        ],
+        "summary": "delete prescription",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definition/prescriptionDeleteResponse"
+            }
+          }
+        }
+      }
+    },
+    "/prescription/getById/{id}": {
+      "get": {
+        "tags": [
+          "Prescription"
+        ],
+        "summary": "Get Prescription By ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "",
+            "required": true
+            
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definition/prescriptionGetById"
+            }
+          }
+        }
+      }
+    }
+  },
+
+
+  "definition": {
+    "object": {},
+
+    "prescriptionGetAllResponseBody": {
+      "required": [],
+      "properties": {
+        "patiantName": {
+          "type": "string",
+          "require": true
+        },
+        "patiantAge": {
+          "type": "string",
+          "require": true
+        },
+        "patiantGender": {
+          "type": "string",
+          "require": true
+        },
+        "complaints": {
+          "type": "string",
+          "require": true
+        },
+        "allergiesAndDiagnosis": {
+          "type": "string",
+          "require": true
+        },
+        "isActive": {
+          "type": "boolean",
+          "require": true
+        },
+        "createdAt": {
+          "type": "Date",
+          "require": true
+        }
+      }
+    },
+    "prescriptionGetAllRequestBody": {
+      "required": [],
+      "properties": {
+        "pageNo": {
+          "type": "number",
+          "require": true
+        },
+        "pageSize": {
+          "type": "number",
+          "require": true
+        },
+        "searchFeild": {
+          "type": "string",
+          "require": true
+        }
+      }
+    },
+
+    "prescriptionAddRequestBody": {
+      "required": [],
+      "properties": {
+        
+        "age": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "integer"
+        },
+        "isActive": {
+          "type": "integer"
+        },
+        "complaints": {
+          "type": "string"
+        },
+        "allergiesAndDiagnosis": {
+          "type": "integer"
+        },
+        "medicine":{
+          "type":"array",
+          "items":{
+            "$ref": "#/definition/medicine"
+          }             
+              
+        }
+      }
+    },
+    "prescriptionAddResponseBody": {
+      "required": [],
+      "properties": {        
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "number"
+        }
+        
+      }
+    },
+
+
+
+
+    "prescriptionUpdateRequestBody": {
+      "required": [],
+      "properties": {
+        "_id":{
+          "type": "string",
+          "require":true
+        },
+        "age": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "integer"
+        },
+        "isActive": {
+          "type": "integer"
+        },
+        "complaints": {
+          "type": "string"
+        },
+        "allergiesAndDiagnosis": {
+          "type": "integer"
+        },
+        "medicine":{
+          "type":"array",
+          "items":{
+            "$ref": "#/definition/medicine"
+          }    
+          
+              
+        }
+      }
+    },
+    "prescriptionUpdateResponseBody": {
+      "required": [],
+      "properties": {        
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "number"
+        }
+        
+      }
+    },
+
+
+    "prescriptionGetById": {
+      "required": [],
+      "properties": {
+        
+        "patiantName": {
+          "type": "string"
+        },
+        "patiantAge": {
+          "type": "string"
+        },
+        "patiantGender": {
+          "type": "integer"
+        },
+        "complaints": {
+          "type": "integer"
+        },
+        "duration": {
+          "type": "integer"
+        }
+        
+      }
+    },
+    "prescriptionDeleteResponse": {
+      "required": [],
+      "properties": {
+        
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+               
+      }
+    },
+
+    "medicine": {
+      "required": [],
+      "properties": {
+        
+        "name": {
+          "type": "string"
+        },
+        "dosage": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        
+        "consumptionTime":{
+          "type": "",
+          "items":{
+            "id":"string",
+            "name":"string"
+          }    
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "isActive":{
+          "type":"boolean"
+        }
+        
+      }
+    },
+
+    "cunsumption": {
+      "required": [],
+      "properties": {
+        
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+               
+      }
+    },
+
+    
+    "Brands": {
+      "type": "array",
+      "$ref": "#/definitions/Brand"
+    }
+  }
+}

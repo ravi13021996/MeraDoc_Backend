@@ -1,0 +1,9 @@
+patiantName,patiantAge,complaints,allergiesAndDiagnosis,isActive,createdAt,patiantGender
+Sutherlan,16,"Removal of Nonautologous Tissue Substitute from Right Metatarsal-Phalangeal Joint, Percutaneous Endoscopic Approach","Revision of Infusion Device in Mediastinum, Percutaneous Approach",TRUE,2020-10-16T17:27:06.000Z,Male
+Randi Petroff,78,"Drainage of Right Conjunctiva, External Approach, Diagnostic","Revision of Extraluminal Device in Upper Artery, External Approach",FALSE,2021-02-13T18:58:44.000Z,Male
+Hendrick Pitway,13,Plain Radiography of Intracranial Sinuses using Low Osmolar Contrast,"Destruction of Right External Jugular Vein, Open Approach",TRUE,2022-07-25T02:41:35.000Z,Male
+Gayleen Ballintime,76,"Excision of Left Shoulder Region, Open Approach","Revision of Intraluminal Device in Right Eye, Open Approach",FALSE,2020-07-27T05:20:18.000Z,Female
+Bree Bonevant,1,"Insertion of Internal Fixation Device into Left Lower Femur, Percutaneous Endoscopic Approach","Irrigation of Female Reproductive using Irrigating Substance, Via Natural or Artificial Opening, Diagnostic",TRUE,2021-01-29T16:04:12.000Z,Female
+Benedick Rotlauf,54,"Excision of Abdominal Sympathetic Nerve, Open Approach, Diagnostic",Computerized Tomography (CT Scan) of Right Foot,FALSE,2022-02-28T15:20:57.000Z,Male
+Kendricks Magee,42,"Measurement of Respiratory Pacemaker, External Approach","Removal of Other Device from Pericardial Cavity, Open Approach",TRUE,2022-07-29T01:25:21.000Z,Male
+Artemus Vitet,48,"Bypass Left Common Iliac Artery to Bilateral Internal Iliac Arteries with Autologous Venous Tissue, Open Approach","Insertion of Radioactive Element into Esophagus, Percutaneous Endoscopic Approach",TRUE,2021-01-09T17:47:04.000Z,Male
